@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Dismantle a Democracy</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-top: #1a1a2e;
+    --bg-bottom: #0a0a0a;
+    --text-light: #e8e4df;
+    --text-mid: #9a9590;
+    --text-dim: #4a4640;
+    --red: #c43c2e;
+    --amber: #d4943a;
+    --dark-card: rgba(255,255,255,0.03);
+    --border-subtle: rgba(255,255,255,0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-top);
+    color: var(--text-light);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .bg-gradient {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(180deg, #1a1a2e 0%, #10101c 30%, #0a0a0f 60%, #050505 100%);
+    z-index: -2;
+  }
+
+  .bg-grid {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+    background-size: 60px 60px;
+    z-index: -1;
+  }
+
+  .container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; position: relative; padding: 60px 24px;
+  }
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    letter-spacing: 6px; text-transform: uppercase; color: var(--red);
+    margin-bottom: 28px; opacity: 0; animation: fadeIn 0.8s ease forwards 0.3s;
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif; font-weight: 900;
+    font-size: clamp(40px, 7vw, 72px); line-height: 1.05; letter-spacing: -1px;
+    max-width: 700px; opacity: 0; animation: fadeIn 0.8s ease forwards 0.6s;
+  }
+  .hero-title em { font-style: italic; color: var(--red); }
+  .hero-sub {
+    font-size: 17px; font-weight: 300; color: var(--text-mid);
+    max-width: 520px; margin-top: 24px; line-height: 1.7;
+    opacity: 0; animation: fadeIn 0.8s ease forwards 0.9s;
+  }
+  .hero-instruction {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim);
+    margin-top: 32px; opacity: 0; animation: fadeIn 0.8s ease forwards 1.1s;
+  }
+  .hero-instruction span { color: var(--amber); }
+  .scroll-cue {
+    position: absolute; bottom: 40px; display: flex; flex-direction: column;
+    align-items: center; gap: 8px; opacity: 0; animation: fadeIn 0.8s ease forwards 1.4s;
+  }
+  .scroll-cue span {
+    font-family: 'JetBrains Mono', monospace; font-size: 9px;
+    letter-spacing: 3px; text-transform: uppercase; color: var(--text-dim);
+  }
+  .scroll-arrow {
+    width: 20px; height: 20px;
+    border-right: 1.5px solid var(--text-dim); border-bottom: 1.5px solid var(--text-dim);
+    transform: rotate(45deg); animation: bobDown 2s ease-in-out infinite;
+  }
+  @keyframes bobDown {
+    0%, 100% { transform: rotate(45deg) translateY(0); }
+    50% { transform: rotate(45deg) translateY(5px); }
+  }
+
+  /* DESCENT */
+  .descent { position: relative; padding: 40px 0 100px; }
+  .spine {
+    position: absolute; left: 50%; top: 0; bottom: 0; width: 2px;
+    background: linear-gradient(180deg, transparent 0%, rgba(196,60,46,0.15) 5%, rgba(196,60,46,0.3) 50%, rgba(196,60,46,0.6) 95%, var(--red) 100%);
+    transform: translateX(-50%);
+  }
+  .step {
+    position: relative; display: flex; align-items: flex-start;
+    margin-bottom: 20px; opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .step.visible { opacity: 1; transform: translateY(0); }
+  .step:nth-child(odd) { flex-direction: row; }
+  .step:nth-child(even) { flex-direction: row-reverse; }
+  .step-content { width: calc(50% - 40px); position: relative; }
+  .step:nth-child(odd) .step-content { margin-right: auto; text-align: right; }
+  .step:nth-child(even) .step-content { margin-left: auto; text-align: left; }
+  .step-card {
+    background: var(--dark-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 28px 24px; position: relative;
+    backdrop-filter: blur(10px); transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .step-card:hover {
+    border-color: rgba(196,60,46,0.25); box-shadow: 0 8px 40px rgba(196,60,46,0.08);
+  }
+  .step-node {
+    position: absolute; left: 50%; top: 28px;
+    width: 18px; height: 18px; transform: translateX(-50%); z-index: 2;
+  }
+  .step-node-inner {
+    width: 100%; height: 100%; border-radius: 50%; background: var(--red);
+    box-shadow: 0 0 12px rgba(196,60,46,0.5), 0 0 30px rgba(196,60,46,0.2);
+    position: relative;
+  }
+  .step-node-inner::after {
+    content: ''; position: absolute; inset: -4px; border-radius: 50%;
+    border: 1px solid rgba(196,60,46,0.3);
+  }
+  .step-number {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;
+    letter-spacing: 3px; color: var(--red); margin-bottom: 8px; text-transform: uppercase;
+  }
+  .step-title {
+    font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700;
+    color: var(--text-light); margin-bottom: 12px; line-height: 1.25;
+  }
+  .step-desc {
+    font-size: 13.5px; font-weight: 300; color: var(--text-mid);
+    line-height: 1.65; margin-bottom: 16px;
+  }
+
+  /* LEADER TAGS + TOOLTIPS */
+  .leaders { display: flex; flex-wrap: wrap; gap: 6px; }
+  .step:nth-child(odd) .leaders { justify-content: flex-end; }
+  .step:nth-child(even) .leaders { justify-content: flex-start; }
+
+  .leader-wrap { position: relative; display: inline-block; }
+
+  .leader-tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.5px;
+    padding: 4px 10px; border-radius: 3px;
+    background: rgba(196,60,46,0.1); color: var(--red);
+    border: 1px solid rgba(196,60,46,0.15); white-space: nowrap;
+    cursor: pointer; transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  }
+  .leader-tag:hover {
+    background: rgba(196,60,46,0.2); border-color: rgba(196,60,46,0.4); transform: translateY(-1px);
+  }
+  .leader-tag.emerging {
+    background: rgba(212,148,58,0.1); color: var(--amber); border-color: rgba(212,148,58,0.2);
+  }
+  .leader-tag.emerging:hover {
+    background: rgba(212,148,58,0.2); border-color: rgba(212,148,58,0.4);
+  }
+
+  .leader-tooltip {
+    display: none; position: absolute; bottom: calc(100% + 10px);
+    left: 50%; transform: translateX(-50%);
+    background: #1c1a18; border: 1px solid #3a3530; border-radius: 6px;
+    padding: 14px 16px; min-width: 280px; max-width: 340px;
+    z-index: 200; box-shadow: 0 12px 48px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.03);
+    pointer-events: none;
+  }
+  .leader-tooltip::after {
+    content: ''; position: absolute; top: 100%; left: 50%;
+    transform: translateX(-50%); border: 7px solid transparent; border-top-color: #3a3530;
+  }
+  .leader-tooltip::before {
+    content: ''; position: absolute; top: 100%; left: 50%;
+    transform: translateX(-50%); border: 6px solid transparent; border-top-color: #1c1a18; z-index: 1;
+  }
+  .leader-wrap:hover .leader-tooltip { display: block; }
+
+  .tooltip-header {
+    font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--red);
+    margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .tooltip-header.amber { color: var(--amber); }
+  .tooltip-text {
+    font-family: 'DM Sans', sans-serif; font-size: 12.5px; font-weight: 300;
+    color: var(--text-light); line-height: 1.6;
+  }
+
+  /* BOTTOM SECTIONS */
+  .abyss { text-align: center; padding: 80px 24px 60px; position: relative; }
+  .abyss::before {
+    content: ''; display: block; width: 2px; height: 60px;
+    background: linear-gradient(180deg, var(--red), transparent); margin: 0 auto 40px;
+  }
+  .abyss-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    letter-spacing: 6px; text-transform: uppercase; color: var(--red); margin-bottom: 20px;
+  }
+  .abyss-title {
+    font-family: 'Playfair Display', serif; font-weight: 900;
+    font-size: clamp(28px, 5vw, 44px); line-height: 1.15;
+    max-width: 500px; margin: 0 auto 24px;
+  }
+  .abyss-text {
+    font-size: 15px; font-weight: 300; color: var(--text-mid);
+    max-width: 500px; margin: 0 auto; line-height: 1.7;
+  }
+  .insight-section { padding: 80px 24px; text-align: center; }
+  .insight-box {
+    background: var(--dark-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 48px 40px; max-width: 660px; margin: 0 auto;
+  }
+  .insight-box blockquote {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: 18px; color: var(--text-light); line-height: 1.65; margin-bottom: 16px;
+  }
+  .insight-box cite {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); font-style: normal;
+  }
+  .insight-note {
+    margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border-subtle);
+    font-size: 13px; font-weight: 300; color: var(--text-mid); line-height: 1.7;
+  }
+  .footer {
+    padding: 40px 24px 60px; text-align: center; border-top: 1px solid var(--border-subtle);
+  }
+  .footer-sources {
+    font-family: 'JetBrains Mono', monospace; font-size: 9px;
+    color: var(--text-dim); letter-spacing: 0.5px; line-height: 2;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 768px) {
+    .spine { left: 24px; }
+    .step-node { left: 24px; top: 20px; }
+    .step, .step:nth-child(odd), .step:nth-child(even) { flex-direction: row; padding-left: 56px; }
+    .step-content, .step:nth-child(odd) .step-content, .step:nth-child(even) .step-content {
+      width: 100%; text-align: left; margin: 0; padding: 0;
+    }
+    .step:nth-child(odd) .leaders, .step:nth-child(even) .leaders { justify-content: flex-start; }
+    .step-card { padding: 20px 18px; }
+    .step-title { font-size: 18px; }
+    .hero { min-height: 80vh; }
+    .insight-box { padding: 32px 24px; }
+    .leader-tooltip { min-width: 220px; max-width: 260px; }
+  }
+</style>
+</head>
+<body>
+<div class="bg-gradient"></div>
+<div class="bg-grid"></div>
+
+<section class="hero">
+  <div class="hero-eyebrow">A Twelve-Step Pattern</div>
+  <h1 class="hero-title">How to Dismantle<br>a <em>Democracy</em></h1>
+  <p class="hero-sub">The same twelve tactics have been used by every authoritarian leader for the past century. The order varies. The outcome does not.</p>
+  <p class="hero-instruction">Hover over each <span>leader</span> for real examples</p>
+  <div class="scroll-cue">
+    <span>Begin the descent</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<section class="descent">
+  <div class="spine"></div>
+  <div class="container">
+
+    <!-- 01 BUILD THE CULT -->
+    <div class="step"><div class="step-content"><div class="step-card">
+      <div class="step-number">Step 01</div>
+      <div class="step-title">Build the Cult</div>
+      <div class="step-desc">Establish a personality-driven movement where loyalty to the leader replaces loyalty to the nation. Criticism becomes treason. The leader is not a public servant but a savior.</div>
+      <div class="leaders">
+        <span class="leader-wrap"><span class="leader-tag">Mussolini</span><span class="leader-tooltip"><div class="tooltip-header">Mussolini · Italy</div><div class="tooltip-text">"Mussolini is always right" was a state slogan. His image covered coins, classroom walls, and public buildings. He staged shirtless farm work and athletic feats for cameras to project superhuman vitality.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Hitler</span><span class="leader-tooltip"><div class="tooltip-header">Hitler · Germany</div><div class="tooltip-text">The "Führer Principle" held that Hitler's word overrode any law or institution. Riefenstahl's "Triumph of the Will" elevated him to a messianic figure. Children were taught to love him before their parents.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Orbán</span><span class="leader-tooltip"><div class="tooltip-header">Orbán · Hungary</div><div class="tooltip-text">State media portrays Orbán as the sole defender of Christian Hungary. Fidesz party loyalty is inseparable from personal loyalty to Orbán. Dissent within the party is virtually nonexistent.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Erdoğan</span><span class="leader-tooltip"><div class="tooltip-header">Erdoğan · Turkey</div><div class="tooltip-text">Bridges, airports, and mosques bear his name. Criticizing Erdoğan is prosecuted as "insulting the president," with over 160,000 cases filed. He is positioned as the embodiment of Turkey itself.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Chávez</span><span class="leader-tooltip"><div class="tooltip-header">Chávez / Maduro · Venezuela</div><div class="tooltip-text">Chávez hosted "Aló Presidente" for up to 8 hours per episode. After his death, Maduro claimed a bird carried Chávez's spirit to bless him. "Chavismo" became a quasi-religion for millions.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag emerging">US 2025</span><span class="leader-tooltip"><div class="tooltip-header amber">Current US Context</div><div class="tooltip-text">Rallies function as loyalty rituals. Branded merchandise creates identity markers. Criticism of the leader is treated as betrayal of the movement. Loyalty tests applied to officials and institutions.</div></span></span>
+      </div>
+    </div></div><div class="step-node"><div class="step-node-inner"></div></div></div>
+
+    <!-- 02 EXPLOIT ECONOMIC PAIN -->
+    <div class="step"><div class="step-content"><div class="step-card">
+      <div class="step-number">Step 02</div>
+      <div class="step-title">Exploit Economic Pain</div>
+      <div class="step-desc">Ride legitimate economic grievance into power. Promise restoration. Blame outsiders for domestic failures. Reward loyalists with state resources and betray the workers who provided the mandate.</div>
+      <div class="leaders">
+        <span class="leader-wrap"><span class="leader-tag">Mussolini</span><span class="leader-tooltip"><div class="tooltip-header">Mussolini · Italy</div><div class="tooltip-text">Rose during post-WWI economic collapse. Courted labor unions and promised workers' rights, then crushed independent unions once in power. Built a "corporatist" state enriching industrial allies.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Hitler</span><span class="leader-tooltip"><div class="tooltip-header">Hitler · Germany</div><div class="tooltip-text">Rose during the Depression with 30% unemployment. The Autobahn and rearmament created visible jobs. "Strength Through Joy" gave workers vacations. Independent unions were abolished on May 2, 1933.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Orbán</span><span class="leader-tooltip"><div class="tooltip-header">Orbán · Hungary</div><div class="tooltip-text">Signature utility price cuts won enormous popularity. EU structural funds distributed through loyalty networks. Government-allied oligarchs control industries. Opponents are financially squeezed.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Erdoğan</span><span class="leader-tooltip"><div class="tooltip-header">Erdoğan · Turkey</div><div class="tooltip-text">AKP's early years tripled per-capita income. Massive construction created visible progress. When the economy deteriorated, Erdoğan blamed foreign conspiracies and "the interest rate lobby."</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Chávez</span><span class="leader-tooltip"><div class="tooltip-header">Chávez / Maduro · Venezuela</div><div class="tooltip-text">Oil revenues funded "Misiones" that cut poverty by half. Free healthcare and subsidized food bought genuine loyalty. When oil collapsed, the model imploded but the regime survived on repression.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag emerging">US 2025</span><span class="leader-tooltip"><div class="tooltip-header amber">Current US Context</div><div class="tooltip-text">Tariff rhetoric channels real working-class anxiety. Promises to restore manufacturing. Tax policies framed as populist while analysis shows primary benefits flowing to top earners.</div></span></span>
+      </div>
+    </div></div><div class="step-node"><div class="step-node-inner"></div></div></div>
+
+    <!-- 03 NAME THE ENEMY -->
+    <div class="step"><div class="step-content"><div class="step-card">
+      <div class="step-number">Step 03</div>
+      <div class="step-title">Name the Enemy</div>
+      <div class="step-desc">Every authoritarian needs a scapegoat. Immigrants, minorities, intellectuals, "elites." Dehumanizing language makes the unthinkable thinkable. It always starts with words.</div>
+      <div class="leaders">
+        <span class="leader-wrap"><span class="leader-tag">Mussolini</span><span class="leader-tooltip"><div class="tooltip-header">Mussolini · Italy</div><div class="tooltip-text">First targeted socialists and "defeatists." Later expanded to ethnic minorities and Jews to align with Hitler. The progression from political to racial scapegoats happened gradually over 15 years.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Hitler</span><span class="leader-tooltip"><div class="tooltip-header">Hitler · Germany</div><div class="tooltip-text">Jews called "vermin" poisoning German blood. Roma, disabled, and LGBTQ people also targeted. Dehumanizing language was deliberate and preceded every escalation of physical violence.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Orbán</span><span class="leader-tooltip"><div class="tooltip-header">Orbán · Hungary</div><div class="tooltip-text">George Soros became the face of an alleged foreign conspiracy via massive billboard campaigns. Refugees framed as existential threats. NGOs helping refugees labeled "foreign agents."</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Erdoğan</span><span class="leader-tooltip"><div class="tooltip-header">Erdoğan · Turkey</div><div class="tooltip-text">Gülenists, Kurds, academics, and journalists all labeled "terrorists." After 2016, "FETÖ member" became a catch-all accusation for anyone the regime wanted to silence.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Chávez</span><span class="leader-tooltip"><div class="tooltip-header">Chávez / Maduro · Venezuela</div><div class="tooltip-text">The "oligarchy" and the US cast as saboteurs waging "economic war." Maduro blamed hyperinflation on foreign plots rather than failed price controls and money printing.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag emerging">US 2025</span><span class="leader-tooltip"><div class="tooltip-header amber">Current US Context</div><div class="tooltip-text">Language like "vermin," "poisoning the blood," and "enemies of the people" applied to immigrants and opponents. Rhetoric mirrors specific historical authoritarian phrasing.</div></span></span>
+      </div>
+    </div></div><div class="step-node"><div class="step-node-inner"></div></div></div>
+
+    <!-- 04 KILL THE TRUTH -->
+    <div class="step"><div class="step-content"><div class="step-card">
+      <div class="step-number">Step 04</div>
+      <div class="step-title">Kill the Truth</div>
+      <div class="step-desc">Discredit independent media. Label journalism "fake news" or "lying press." Then build a parallel information ecosystem where the leader's version of reality is the only one that reaches most citizens.</div>
+      <div class="leaders">
+        <span class="leader-wrap"><span class="leader-tag">Mussolini</span><span class="leader-tooltip"><div class="tooltip-header">Mussolini · Italy</div><div class="tooltip-text">Ministry of Popular Culture controlled all radio, film, and press. LUCE newsreels were mandatory in cinemas. Didn't just censor truth but manufactured a complete alternative reality.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Hitler</span><span class="leader-tooltip"><div class="tooltip-header">Hitler · Germany</div><div class="tooltip-text">Coined "Lügenpresse" (Lying Press). Goebbels' Propaganda Ministry controlled all outlets. Book burnings destroyed competing ideas. The regime manufactured an entirely alternative reality.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Orbán</span><span class="leader-tooltip"><div class="tooltip-header">Orbán · Hungary</div><div class="tooltip-text">Over 80% of Hungarian media now controlled by pro-government allies via coordinated oligarch buyouts. Independent outlets face advertising boycotts. The media council is stacked with loyalists.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Erdoğan</span><span class="leader-tooltip"><div class="tooltip-header">Erdoğan · Turkey</div><div class="tooltip-text">World's leading jailer of journalists. Wikipedia blocked for three years. After 2016, over 150 media outlets shut down. Major networks seized and converted to state mouthpieces overnight.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Chávez</span><span class="leader-tooltip"><div class="tooltip-header">Chávez / Maduro · Venezuela</div><div class="tooltip-text">RCTV, the oldest private network, shut down in 2007. State media expanded massively. Maduro deployed internet shutdowns during protests. Journalists face arrest, deportation, or violence.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag emerging">US 2025</span><span class="leader-tooltip"><div class="tooltip-header amber">Current US Context</div><div class="tooltip-text">"Fake news" delegitimizes journalism. "Alternative facts" became a governing concept. Parallel media ecosystems deliver different factual premises. Public broadcasting funding targeted.</div></span></span>
+      </div>
+    </div></div><div class="step-node"><div class="step-node-inner"></div></div></div>
+
+    <!-- 05 FRACTURE THE OPPOSITION -->
+    <div class="step"><div class="step-content"><div class="step-card">
+      <div class="step-number">Step 05</div>
+      <div class="step-title">Fracture the Opposition</div>
+      <div class="step-desc">Divide opponents against each other. Exploit ideological differences. Co-opt moderates. Frame politics as identity warfare so coalitions can never form. A fragmented opposition is a powerless one.</div>
+      <div class="leaders">
+        <span class="leader-wrap"><span class="leader-tag">Mussolini</span><span class="leader-tooltip"><div class="tooltip-header">Mussolini · Italy</div><div class="tooltip-text">Exploited fatal divisions between socialists, liberals, monarchists, and Catholics. Played each against the others while destroying them one at a time. By the time they united, it was too late.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Hitler</span><span class="leader-tooltip"><div class="tooltip-header">Hitler · Germany</div><div class="tooltip-text">Communists and Social Democrats refused to unite, each seeing the other as a greater threat. Conservative elites believed they could "control" Hitler. The Vatican Concordat neutralized Catholics.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Orbán</span><span class="leader-tooltip"><div class="tooltip-header">Orbán · Hungary</div><div class="tooltip-text">Opposition spans from former neo-Nazis to greens. Electoral rules punish fragmentation. Despite a historic 2022 coalition, Fidesz won easily. Media control ensures opposition voices rarely reach voters.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Erdoğan</span><span class="leader-tooltip"><div class="tooltip-header">Erdoğan · Turkey</div><div class="tooltip-text">Played Kurdish leftists against secular nationalists, religious conservatives against liberals. Co-opted far-right MHP as coalition partner. Opposition diversity makes sustained unity very difficult.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Chávez</span><span class="leader-tooltip"><div class="tooltip-header">Chávez / Maduro · Venezuela</div><div class="tooltip-text">Class divisions between wealthy and poor weaponized. Opposition coalitions fractured over strategy: participate in elections or boycott? The regime used selective negotiations to peel off factions.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag emerging">US 2025</span><span class="leader-tooltip"><div class="tooltip-header amber">Current US Context</div><div class="tooltip-text">Cultural wedge issues amplified over policy. Politics reframed as existential identity conflict. Opposition pulled between progressive and moderate wings. Internal disagreements weaponized.</div></span></span>
+      </div>
+    </div></div><div class="step-node"><div class="step-node-inner"></div></div></div>
+
+    <!-- 06 DEPLOY FORCE -->
+    <div class="step"><div class="step-content"><div class="step-card">
+      <div class="step-number">Step 06</div>
+      <div class="step-title">Deploy Force Outside the Law</div>
+      <div class="step-desc">Blackshirts. Brownshirts. Colectivos. Armed loyalists who operate with impunity. Expand law enforcement into a political instrument. The threat of violence disciplines dissent.</div>
+      <div class="leaders">
+        <span class="leader-wrap"><span class="leader-tag">Mussolini</span><span class="leader-tooltip"><div class="tooltip-header">Mussolini · Italy</div><div class="tooltip-text">Blackshirt squads attacked socialist halls, beat opposition politicians, and forced castor oil on dissenters. The March on Rome itself was a paramilitary show of force the King chose not to resist.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Hitler</span><span class="leader-tooltip"><div class="tooltip-header">Hitler · Germany</div><div class="tooltip-text">The SA numbered 3 million by 1934, terrorizing opponents. Kristallnacht saw state-organized mobs destroy 7,500 Jewish businesses. The SS later became the instrument of industrialized state terror.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Orbán</span><span class="leader-tooltip"><div class="tooltip-header">Orbán · Hungary</div><div class="tooltip-text">Less overt, but "border hunters" recruited with minimal training for anti-migrant operations. Vigilante groups patrolled during the 2015 refugee crisis with tacit government approval.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Erdoğan</span><span class="leader-tooltip"><div class="tooltip-header">Erdoğan · Turkey</div><div class="tooltip-text">During the 2016 coup, Erdoğan called citizens to confront soldiers. Pro-government mobs beat surrendering conscripts. He praised this as "democracy in action." Mass arrests followed for years.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Chávez</span><span class="leader-tooltip"><div class="tooltip-header">Chávez / Maduro · Venezuela</div><div class="tooltip-text">"Colectivos" are armed civilian militias operating with full impunity. They attack protesters, assault journalists, and control neighborhoods. Maduro expanded their role as military loyalty wavered.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag emerging">US 2025</span><span class="leader-tooltip"><div class="tooltip-header amber">Current US Context</div><div class="tooltip-text">ICE expanded with reduced oversight. Federal agents deployed in cities as political leverage. Pardons for politically motivated violence signal reduced accountability for loyal actors.</div></span></span>
+      </div>
+    </div></div><div class="step-node"><div class="step-node-inner"></div></div></div>
+
+    <!-- 07 PURGE THE CIVIL SERVICE -->
+    <div class="step"><div class="step-content"><div class="step-card">
+      <div class="step-number">Step 07</div>
+      <div class="step-title">Purge the Civil Service</div>
+      <div class="step-desc">Replace competence with loyalty. Fire career professionals. Install true believers. When the people who know how to run the government are gone, the government only answers to one person.</div>
+      <div class="leaders">
+        <span class="leader-wrap"><span class="leader-tag">Mussolini</span><span class="leader-tooltip"><div class="tooltip-header">Mussolini · Italy</div><div class="tooltip-text">All state employees required to join the Fascist Party or lose their positions. Competence-based hiring replaced entirely by political loyalty. The bureaucracy became an arm of the party.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Hitler</span><span class="leader-tooltip"><div class="tooltip-header">Hitler · Germany</div><div class="tooltip-text">The Civil Service Law (April 1933) was one of the first laws passed, showing how early institutional capture was prioritized. Anyone "unreliable" or "non-Aryan" was fired immediately.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Orbán</span><span class="leader-tooltip"><div class="tooltip-header">Orbán · Hungary</div><div class="tooltip-text">Independent agency heads systematically replaced. Constitutional Court packed. Merit-based hiring replaced with political appointments. Independent oversight bodies gutted over 14 years.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Erdoğan</span><span class="leader-tooltip"><div class="tooltip-header">Erdoğan · Turkey</div><div class="tooltip-text">Over 150,000 civil servants, judges, teachers, and officers purged after 2016. The largest such action in any modern democracy. Replaced with loyalists, destroying institutional knowledge overnight.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Chávez</span><span class="leader-tooltip"><div class="tooltip-header">Chávez / Maduro · Venezuela</div><div class="tooltip-text">18,000 PDVSA oil workers fired after a 2002 strike, replaced with unqualified loyalists. Economists widely cite this decision as a primary driver of Venezuela's catastrophic economic collapse.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag emerging">US 2025</span><span class="leader-tooltip"><div class="tooltip-header amber">Current US Context</div><div class="tooltip-text">Schedule F aims to reclassify tens of thousands of federal employees as "at-will." Inspectors general fired. Career diplomats and scientists replaced with political appointees across agencies.</div></span></span>
+      </div>
+    </div></div><div class="step-node"><div class="step-node-inner"></div></div></div>
+
+    <!-- 08 CAPTURE INSTITUTIONS -->
+    <div class="step"><div class="step-content"><div class="step-card">
+      <div class="step-number">Step 08</div>
+      <div class="step-title">Capture the Institutions</div>
+      <div class="step-desc">Pack courts. Politicize the military. Undermine central banks. Fire inspectors general. Every check on executive power must be neutralized before the final steps can proceed.</div>
+      <div class="leaders">
+        <span class="leader-wrap"><span class="leader-tag">Mussolini</span><span class="leader-tooltip"><div class="tooltip-header">Mussolini · Italy</div><div class="tooltip-text">Judges replaced. Military under party control. Church co-opted through the Lateran Treaty. The monarchy maintained as a facade while every real institution was absorbed or destroyed.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Hitler</span><span class="leader-tooltip"><div class="tooltip-header">Hitler · Germany</div><div class="tooltip-text">Blomberg-Fritsch affair removed independent military leaders. Wehrmacht forced to swear a personal oath to Hitler, not Germany. Night of the Long Knives eliminated rival power centers.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Orbán</span><span class="leader-tooltip"><div class="tooltip-header">Orbán · Hungary</div><div class="tooltip-text">Constitutional Court packed. National bank politicized. Universities transferred to government foundations. Prosecution service answers to the ruling party. A 14-year systematic dismantling.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Erdoğan</span><span class="leader-tooltip"><div class="tooltip-header">Erdoğan · Turkey</div><div class="tooltip-text">Military restructured under loyalist command. Judiciary purged and packed. Central bank governors fired for defying Erdoğan's unorthodox interest rate demands.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Chávez</span><span class="leader-tooltip"><div class="tooltip-header">Chávez / Maduro · Venezuela</div><div class="tooltip-text">Supreme Court expanded from 20 to 32 loyalist seats. Military officers placed in civilian ministries. Electoral council became a regime tool. Parallel institutions created whenever existing ones resisted.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag emerging">US 2025</span><span class="leader-tooltip"><div class="tooltip-header amber">Current US Context</div><div class="tooltip-text">Inspectors general fired across agencies. Federal Reserve independence challenged. Judicial legitimacy attacked on unfavorable rulings. Loyalty tested as condition for leadership roles.</div></span></span>
+      </div>
+    </div></div><div class="step-node"><div class="step-node-inner"></div></div></div>
+
+    <!-- 09 NEUTRALIZE LEGISLATURE -->
+    <div class="step"><div class="step-content"><div class="step-card">
+      <div class="step-number">Step 09</div>
+      <div class="step-title">Neutralize the Legislature</div>
+      <div class="step-desc">Make parliament a rubber stamp. Bypass it with executive decrees. Demand party loyalty over independent judgment. When the legislature stops checking the executive, separation of powers exists only on paper.</div>
+      <div class="leaders">
+        <span class="leader-wrap"><span class="leader-tag">Mussolini</span><span class="leader-tooltip"><div class="tooltip-header">Mussolini · Italy</div><div class="tooltip-text">Parliament sidelined until purely ceremonial. The Fascist Grand Council replaced real deliberation. Even that body was ultimately a rubber stamp for Mussolini's decisions.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Hitler</span><span class="leader-tooltip"><div class="tooltip-header">Hitler · Germany</div><div class="tooltip-text">The Enabling Act (March 1933) made the Reichstag legally irrelevant. It continued to "meet" only to deliver ovations. All opposition parties dissolved by July 1933. Democracy ended in four months.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Orbán</span><span class="leader-tooltip"><div class="tooltip-header">Orbán · Hungary</div><div class="tooltip-text">Two-thirds supermajority allows rewriting any law at will. Committee rules, floor time, and amendment procedures changed to silence opposition within the chamber itself.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Erdoğan</span><span class="leader-tooltip"><div class="tooltip-header">Erdoğan · Turkey</div><div class="tooltip-text">2017 referendum shifted to presidential system concentrating executive power. Opposition MPs arrested and stripped of immunity. Erdoğan can issue binding decrees on most matters.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Chávez</span><span class="leader-tooltip"><div class="tooltip-header">Chávez / Maduro · Venezuela</div><div class="tooltip-text">When opposition won the National Assembly in 2015, Maduro created a parallel "Constituent Assembly" packed with loyalists, granting it supreme authority to override the elected legislature.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag emerging">US 2025</span><span class="leader-tooltip"><div class="tooltip-header amber">Current US Context</div><div class="tooltip-text">Executive orders bypass legislative deliberation. Congressional oversight challenged as illegitimate. Party members who vote independently face primary threats and public attacks.</div></span></span>
+      </div>
+    </div></div><div class="step-node"><div class="step-node-inner"></div></div></div>
+
+    <!-- 10 REWRITE THE STORY -->
+    <div class="step"><div class="step-content"><div class="step-card">
+      <div class="step-number">Step 10</div>
+      <div class="step-title">Rewrite the Story</div>
+      <div class="step-desc">Control education. Revise textbooks. Ban ideas. Purge universities. The next generation must only know the leader's version of history. A nation that can't remember how it got here can't find its way back.</div>
+      <div class="leaders">
+        <span class="leader-wrap"><span class="leader-tag">Mussolini</span><span class="leader-tooltip"><div class="tooltip-header">Mussolini · Italy</div><div class="tooltip-text">Textbooks rewritten to glorify Fascism and Rome. Teachers swore loyalty oaths. Opera Nazionale Balilla organized all youth. Universities purged of "subversive" professors.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Hitler</span><span class="leader-tooltip"><div class="tooltip-header">Hitler · Germany</div><div class="tooltip-text">Curriculum Nazified immediately. Racial science became mandatory. Jewish and liberal professors fired. Hitler Youth compulsory. Book burnings of May 1933 destroyed intellectual independence.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Orbán</span><span class="leader-tooltip"><div class="tooltip-header">Orbán · Hungary</div><div class="tooltip-text">Central European University forced to relocate to Vienna. Universities placed under government foundations. Textbooks rewritten for nationalist narratives. Gender studies banned entirely in 2018.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Erdoğan</span><span class="leader-tooltip"><div class="tooltip-header">Erdoğan · Turkey</div><div class="tooltip-text">33,000+ teachers purged after 2016. Curriculum revised for religious and nationalist values. Gülen school network seized. University rectors now government-appointed.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Chávez</span><span class="leader-tooltip"><div class="tooltip-header">Chávez / Maduro · Venezuela</div><div class="tooltip-text">"Bolivarian" curriculum introduced emphasizing socialist ideology. Universities defunded when they resisted. Student protest movements met with violence from colectivos.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag emerging">US 2025</span><span class="leader-tooltip"><div class="tooltip-header amber">Current US Context</div><div class="tooltip-text">Critical race theory and DEI targeted through legislation. Book banning accelerating. Department of Education restructuring proposed. University tenure and academic freedom under pressure.</div></span></span>
+      </div>
+    </div></div><div class="step-node"><div class="step-node-inner"></div></div></div>
+
+    <!-- 11 MANUFACTURE THE CRISIS -->
+    <div class="step"><div class="step-content"><div class="step-card">
+      <div class="step-number">Step 11</div>
+      <div class="step-title">Manufacture the Crisis</div>
+      <div class="step-desc">The Reichstag fire. The coup attempt. The border emergency. Every authoritarian needs a crisis, real or manufactured, that justifies "temporary" emergency powers. The emergency never ends.</div>
+      <div class="leaders">
+        <span class="leader-wrap"><span class="leader-tag">Mussolini</span><span class="leader-tooltip"><div class="tooltip-header">Mussolini · Italy</div><div class="tooltip-text">The Matteotti crisis turned from scandal into pretext. A socialist critic was assassinated by Fascists, and rather than weakening Mussolini, it was used to justify eliminating all remaining opposition.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Hitler</span><span class="leader-tooltip"><div class="tooltip-header">Hitler · Germany</div><div class="tooltip-text">The Reichstag fire (Feb 27, 1933) suspended civil liberties the next day. One building fire justified permanent emergency powers. Whether set by Nazis remains debated; the exploitation was instant.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Orbán</span><span class="leader-tooltip"><div class="tooltip-header">Orbán · Hungary</div><div class="tooltip-text">2015 refugee crisis exploited for border fences and emergency powers. COVID-19 used to pass indefinite rule-by-decree with no sunset clause. Each crisis ratcheted authority higher, permanently.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Erdoğan</span><span class="leader-tooltip"><div class="tooltip-header">Erdoğan · Turkey</div><div class="tooltip-text">The 2016 coup attempt became justification for the largest purge in modern democratic history. Erdoğan called it "a gift from God." Two years of governance by emergency decree followed.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Chávez</span><span class="leader-tooltip"><div class="tooltip-header">Chávez / Maduro · Venezuela</div><div class="tooltip-text">The failed 2002 coup against Chávez justified purging the military and expanding power. Each economic crisis blamed on "economic war" by foreign saboteurs, justifying further state control.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag emerging">US 2025</span><span class="leader-tooltip"><div class="tooltip-header amber">Current US Context</div><div class="tooltip-text">Immigration framed as permanent emergency justifying executive action. Trade disruption used to expand authority. Political opposition itself framed as a crisis requiring extraordinary measures.</div></span></span>
+      </div>
+    </div></div><div class="step-node"><div class="step-node-inner"></div></div></div>
+
+    <!-- 12 MAKE IT LEGAL -->
+    <div class="step"><div class="step-content"><div class="step-card">
+      <div class="step-number">Step 12</div>
+      <div class="step-title">Make It "Legal"</div>
+      <div class="step-desc">The final move. Rewrite constitutions. Rig electoral rules. Use courts to validate power grabs. Every dictatorship is "legal" in its own courts. The law becomes the weapon, not the shield.</div>
+      <div class="leaders">
+        <span class="leader-wrap"><span class="leader-tag">Mussolini</span><span class="leader-tooltip"><div class="tooltip-header">Mussolini · Italy</div><div class="tooltip-text">The Acerbo Law (1923) guaranteed a 2/3 majority to the leading party. Monarchy, courts, and legal system maintained as facades. Every step toward dictatorship was technically "constitutional."</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Hitler</span><span class="leader-tooltip"><div class="tooltip-header">Hitler · Germany</div><div class="tooltip-text">The Enabling Act passed with required votes (after arresting Communist MPs). Article 48 used "legally" before that. Every step from democracy to dictatorship had legal justification. That was the point.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Orbán</span><span class="leader-tooltip"><div class="tooltip-header">Orbán · Hungary</div><div class="tooltip-text">New constitution written using supermajority. Electoral districts gerrymandered. Voting rules changed to favor Fidesz. Every action passed through "proper" channels, making legal challenges nearly impossible.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Erdoğan</span><span class="leader-tooltip"><div class="tooltip-header">Erdoğan · Turkey</div><div class="tooltip-text">2017 constitutional referendum concentrated power in the presidency. Courts packed with loyalists validate executive actions. Emergency decrees used for two years. All technically "within the law."</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag">Chávez</span><span class="leader-tooltip"><div class="tooltip-header">Chávez / Maduro · Venezuela</div><div class="tooltip-text">Constitution rewritten via 1999 referendum. Supreme Court packed. When the opposition won the legislature, a new "Constituent Assembly" was invented with supreme authority to override it.</div></span></span>
+        <span class="leader-wrap"><span class="leader-tag emerging">US 2025</span><span class="leader-tooltip"><div class="tooltip-header amber">Current US Context</div><div class="tooltip-text">Gerrymandering, judicial appointments, and election certification challenges. Executive authority expanded via creative statutory interpretation. Constitutional boundaries tested through executive action.</div></span></span>
+      </div>
+    </div></div><div class="step-node"><div class="step-node-inner"></div></div></div>
+
+  </div>
+</section>
+
+<section class="abyss">
+  <div class="abyss-label">End of the Descent</div>
+  <h2 class="abyss-title">The bottom looks the same in every language.</h2>
+  <p class="abyss-text">Six leaders. Six countries. One century. Every one of them followed these steps. The order shifted. The tactics adapted. The destination never changed.</p>
+</section>
+
+<section class="insight-section">
+  <div class="container">
+    <div class="insight-box">
+      <blockquote>"Each act, each occasion, is worse than the last, but only a little worse. You wait for the next and the next. You wait for one great shocking occasion, thinking that others, when such a shock comes, will join with you in resisting somehow."</blockquote>
+      <cite>Milton Mayer, "They Thought They Were Free" (1955)</cite>
+      <div class="insight-note">
+        The value of pattern recognition is not prediction. It is earlier identification. Knowing the playbook does not mean the game is lost. It means you can see the next move before it is made.
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-sources">
+      Sources: Eco, "Ur-Fascism" (1995) · Paxton, "The Anatomy of Fascism" (2004) · Snyder, "On Tyranny" (2017)<br>
+      Levitsky & Ziblatt, "How Democracies Die" (2018) · Ben-Ghiat, "Strongmen" (2020) · Applebaum, "Twilight of Democracy" (2020)
+    </div>
+  </div>
+</footer>
+
+<script>
+const steps = document.querySelectorAll('.step');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+}, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+steps.forEach(step => observer.observe(step));
+
+const spine = document.querySelector('.spine');
+window.addEventListener('scroll', () => {
+  const p = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+  spine.style.opacity = 0.6 + p * 0.4;
+});
+
+// Dynamic tooltip repositioning
+document.querySelectorAll('.leader-wrap').forEach(wrap => {
+  wrap.addEventListener('mouseenter', () => {
+    const tip = wrap.querySelector('.leader-tooltip');
+    if (!tip) return;
+    // Reset positioning
+    tip.style.left = '50%';
+    tip.style.right = 'auto';
+    tip.style.transform = 'translateX(-50%)';
+    // Check bounds after display
+    requestAnimationFrame(() => {
+      const r = tip.getBoundingClientRect();
+      if (r.right > window.innerWidth - 12) {
+        tip.style.left = 'auto';
+        tip.style.right = '-8px';
+        tip.style.transform = 'none';
+      } else if (r.left < 12) {
+        tip.style.left = '-8px';
+        tip.style.right = 'auto';
+        tip.style.transform = 'none';
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>
